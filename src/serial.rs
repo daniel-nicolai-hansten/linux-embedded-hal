@@ -56,6 +56,17 @@ impl embedded_hal_nb::serial::Write<u8> for Serial {
     }
 }
 
+impl embedded_hal::blocking::serial::Write<u8> for Serial {
+    fn write(&mut self, word: u8) -> nb::Result<(), Self::Error> {
+        self.0.write(&[word]).map_err(translate_io_errors)?;
+        Ok(())
+    }
+
+    fn flush(&mut self) -> nb::Result<(), Self::Error> {
+        self.0.flush().map_err(translate_io_errors)
+    }
+}
+
 /// Error type wrapping [io::ErrorKind](IoErrorKind) to implement [embedded_hal::serial::ErrorKind]
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct SerialError {
