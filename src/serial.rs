@@ -58,7 +58,7 @@ impl embedded_hal_nb::serial::Write<u8> for Serial {
 
 impl embedded_hal::serial::Write<u8> for Serial {
     fn write(&mut self, word: &[u8]) -> Result<(), Self::Error> {
-        self.0.write(word))?;
+        self.0.write(word)?;
         Ok(())
     }
 
