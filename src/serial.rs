@@ -28,7 +28,7 @@ fn translate_io_errors(err: std::io::Error) -> nb::Error<SerialError> {
         err => nb::Error::Other(SerialError { err }),
     }
 }
-fn translate_io_errors_b(err: std::io::Error) -> Error<SerialError> {
+fn translate_io_errors_b(err: std::io::Error) -> embedded_hal::Error<SerialError> {
     match err.kind() {
         IoErrorKind::WouldBlock | IoErrorKind::TimedOut | IoErrorKind::Interrupted => {
             nb::Error::WouldBlock
@@ -65,12 +65,12 @@ impl embedded_hal_nb::serial::Write<u8> for Serial {
 }
 
 impl embedded_hal::serial::Write<u8> for Serial {
-    fn write(&mut self, word: &[u8]) -> Result<(), Self::Error> {
+    fn write(&mut self, word: &[u8]) -> embedded_hal::Result<(), Self::Error> {
         self.0.write(word).map_err(translate_io_errors_b)?;
         Ok(())
     }
 
-    fn flush(&mut self) -> Result<(), Self::Error> {
+    fn flush(&mut self) -> embedded_hal::Result<(), Self::Error> {
         self.0.flush().map_err(translate_io_errors_b)
     }
 }
